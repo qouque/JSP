@@ -1,3 +1,4 @@
+<%@page import="java.time.MonthDay"%>
 <%@page import="java.util.TimeZone"%>
 <%@page import="org.apache.commons.lang3.StringUtils"%>
 <%@page import="java.time.Month"%>
@@ -43,7 +44,7 @@
 </head>
 <body>
 <%
-	
+	Locale lc = Locale.KOREA;
 	Calendar calendar = Calendar.getInstance();
 	int nYear = calendar.get(Calendar.YEAR);
 	int nMonth = calendar.get(Calendar.MONTH);
@@ -52,10 +53,14 @@
 	int lastDay;
 	
 	Month mth =  Month.of(nMonth+1);
+	
+	DateFormatSymbols mdfs = new DateFormatSymbols(lc);
+	String[] months = mdfs.getMonths();
+	
 %>
 <div id="headerDiv">
 <input type="button" value="◀" style="color: blue; font-size: 20" />
-<span style="font-size: 25px; font-weight: bold;"><%= nYear+", "+ mth.name() %></span>
+<span style="font-size: 25px; font-weight: bold;"><%= nYear+", "+ months[nMonth] %></span>
 <input type="button" value="▶" style="color: blue; font-size: 20" />
 </div>
 <br/>
@@ -65,18 +70,16 @@ year : <input type="text" name = "year" value="<%=nYear %>" />
 month : 
 <select>
 <%
-	
-	Month[] mths = Month.values();
-	String mthName = "";
+
 	String mthPattern = "<option value = '%s'>%s</optoin>";
-	for(int i = 0; i < mths.length; i++){
-		out.println(String.format(mthPattern, mths[i].getValue(), mths[i].name()));
+	for(int i = 0; i < months.length; i++){
+		out.println(String.format(mthPattern, i, months[i]));
 	}
 
 %>
 </select>
 <!-- locale -->
-<select>
+<select name = "selectLocale">
 <%
 	Locale[] locales = Locale.getAvailableLocales();
 	String lcPattern = "<option value = '%s'>%s</option>";
@@ -106,7 +109,7 @@ month :
 <thead>
 	<tr>
 		<%
-		Locale lc = Locale.KOREA;
+		
 		WeekFields wf = WeekFields.of(lc);
 		DayOfWeek day = wf.getFirstDayOfWeek();
 		

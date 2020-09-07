@@ -30,25 +30,42 @@ public class LoginProcessServlet extends HttpServlet{
 		String msg = "";
 		String mem_id = req.getParameter("mem_id");
 		String mem_pass = req.getParameter("mem_pass");
-		HttpSession session = req.getSession();
 		
 		int statusCode = HttpServletResponse.SC_OK;
 		if(StringUtils.isBlank(mem_id) || StringUtils.isBlank(mem_pass)){
 			msg = "필수 파라미터 누락";
 			statusCode = HttpServletResponse.SC_BAD_REQUEST;
-		}
-		if(statusCode != 200) {
 			resp.sendError(statusCode, msg);
-			
-		}else {
-			if(mem_id.equals(mem_pass)) {
-				session.setAttribute("authID", mem_id);
-				resp.sendRedirect(req.getContextPath() + "/index.jsp");
-			}else {
-				req.setAttribute("authID", mem_id);
-				req.getRequestDispatcher("/login/loginForm.jsp").forward(req, resp);
-			}
+			return;
 		}
+		
+		String goPage = null;
+		boolean redirect = false;
+		
+		HttpSession session = req.getSession(false);
+		if(session == null || session.isNew()) {
+			resp.sendError(statusCode, "현재 요청이 최초요청일수 없음.");
+			return;
+		}
+		String message = null;
+		if(mem_id.equals(mem_pass)) {
+			goPage = "/";
+			redirect = true;
+			session.setAttribute("authID", mem_id);
+		}else {
+			goPage = "/login/loginForm.jsp";
+			message = "비번 오류";
+			req.setAttribute("message", message);
+		}
+		
+		if(redirect) {
+			resp.sendRedirect(req.getContextPath() + goPage);
+		}else {
+			req.getRequestDispatcher(goPage).forward(req, resp);
+			
+		}
+		
+	
 		
 		
 		

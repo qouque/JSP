@@ -40,7 +40,7 @@
     <url-pattern>/image/imageList.do</url-pattern>
   </servlet-mapping>
   <session-config>
-  	<session-timeout>2</session-timeout>
+  	<session-timeout>10</session-timeout>
   </session-config>
 </web-app>
 

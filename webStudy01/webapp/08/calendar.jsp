@@ -1,3 +1,6 @@
+<%@page import="java.util.TimeZone"%>
+<%@page import="org.apache.commons.lang3.StringUtils"%>
+<%@page import="java.time.Month"%>
 <%@page import="java.time.format.TextStyle"%>
 <%@page import="java.time.DayOfWeek"%>
 <%@page import="java.time.temporal.WeekFields"%>
@@ -18,36 +21,89 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+	table{
+		margin-left: auto;
+		margin-right: auto;
+	}
+	td{
+		width : 70px;
+		height : 30px;
+		text-align: center;
+		
+	}
+	#headerDiv{
+		text-align: center;
+	
+	}
+	#bodyDiv{
+		text-align: center;
+	}
+</style>
 </head>
 <body>
 <%
+	
 	Calendar calendar = Calendar.getInstance();
 	int nYear = calendar.get(Calendar.YEAR);
 	int nMonth = calendar.get(Calendar.MONTH);
 	
-	int startDay = calendar.get(Calendar.DAY_OF_WEEK); 
-	int lastDay = calendar.getActualMaximum(Calendar.DATE);
+	int startDay;
+	int lastDay;
 	
-	
-
+	Month mth =  Month.of(nMonth+1);
 %>
-<h4></h4>
-year : <input type="text" name = "year" />
+<div id="headerDiv">
+<input type="button" value="◀" style="color: blue; font-size: 20" />
+<span style="font-size: 25px; font-weight: bold;"><%= nYear+", "+ mth.name() %></span>
+<input type="button" value="▶" style="color: blue; font-size: 20" />
+</div>
+<br/>
+<div id = "bodyDiv">
+
+year : <input type="text" name = "year" value="<%=nYear %>" />
 month : 
 <select>
 <%
-// 	Calendar.
+	
+	Month[] mths = Month.values();
+	String mthName = "";
+	String mthPattern = "<option value = '%s'>%s</optoin>";
+	for(int i = 0; i < mths.length; i++){
+		out.println(String.format(mthPattern, mths[i].getValue(), mths[i].name()));
+	}
 
 %>
 </select>
 <!-- locale -->
 <select>
+<%
+	Locale[] locales = Locale.getAvailableLocales();
+	String lcPattern = "<option value = '%s'>%s</option>";
+	for(Locale locale : locales){
+		String display = locale.getDisplayLanguage(locale);
+		if(StringUtils.isBlank(display)){
+			continue;
+		}
+		out.println(String.format(lcPattern, locale.toLanguageTag(), display));
+	}
+
+%>
 
 </select>
 <!-- TimeZone -->
 <select>
+<%
+	String[] timeZone = TimeZone.getAvailableIDs();
+	String tzPattern = "<option>%s</option>";
+	for(int i = 0; i < timeZone.length; i++){
+		out.println(String.format(tzPattern, timeZone[i]));
+	}
+%>
 </select>
+<br/>
 <table border="1">
+<thead>
 	<tr>
 		<%
 		Locale lc = Locale.KOREA;
@@ -55,7 +111,6 @@ month :
 		DayOfWeek day = wf.getFirstDayOfWeek();
 		
 		String pattern = "<th>%s</th>";
-		
 		String language = Locale.KOREAN.toString();
 		 for (int i = 0; i < DayOfWeek.values().length; i++) {
 	         out.println(String.format(pattern, day.getDisplayName(TextStyle.SHORT, lc)));
@@ -63,18 +118,54 @@ month :
 	      }
 		%>
 	</tr>
+</thead>
+<tbody>
 <%
-	String pattern2 = "<th>%s</th>";
+
+	calendar.set(Calendar.YEAR, nYear);
+	calendar.set(Calendar.MONTH, nMonth);
+	calendar.set(Calendar.DATE, 1);
+		
+	startDay = calendar.get(Calendar.DAY_OF_WEEK);     
+	lastDay = calendar.getActualMaximum(Calendar.DATE);
+	
+	String calPattern = "<td style = 'color : %s'>%s</td>";
 	Date date = new Date();
-	for(int i = 0; i <= lastDay; i++){
-		out.println();
+	int cnt = 0;
+	int inputDate = 1;
+	
+	for(int i = 0; inputDate <= lastDay; i++){
+	String color = "black";
+		if(cnt == 0){
+			out.println("<tr>");
+			color = "red";
+		}else if(cnt == 6){
+			color = "blue";
+		}else{
+			color = "black";
+		}
+		
 		if(i<startDay-1){
-			out.println(String.format(pattern2, ""));
+			out.println(String.format(calPattern, color,""));
+		}else{
+			out.println(String.format(calPattern, color, inputDate));
+			inputDate++;
+		}
+		cnt++;
+		if(cnt == 7){
+			out.println("</tr>");
+			cnt = 0;
 		}
 	}
-
+	while(cnt > 0 && cnt < 7){
+	  out.println("<TD>&nbsp;</TD>");
+	  cnt++;
+	}
 %>
+</tbody>
 </table>
+</div>
+
 </body>
 </html>
 

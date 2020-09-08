@@ -31,14 +31,19 @@
 				node = param.node;
 				destFolder = node.key;
 			}
+			let ctxName = null;
+			if(param.ctxName){
+				ctxName = param.ctxName;
+			}
+			console.log(ctxName);
 			let srcFile = data.otherNode.key;
 			$.ajax({
 				
 				data : {
 					command : command,
 					srcFile : srcFile,
-					destFolder: destFolder
-				        
+					destFolder: destFolder,
+					ctxName : ctxName
 				},
 				method : "post",
 				dataType : "json", //Accept, Content-Type - 한쌍으로감
@@ -110,48 +115,71 @@
           				
           				node : node,
           				data : data,
-          				command : data.originalEvent.ctrlKey?"COPY":"MOVE"
-          				
+          				command : data.originalEvent.ctrlKey?"COPY":"MOVE",
+          					ctxName : "/dummy"
           		}
           		commandProcess(param);
 				}
 			}
 		});
 		
-		
-		//내가한거!
-// 		$("ul").on("click", "li", function(event) {
-// 			event.stopPropagation();
-// 			let li = $(this);
-			
-// 			if(li.attr("class") == "dir"){
-// 				let child = li.find("ul").get(0);
-// 				if(child){
-// 					let vis = $(child).is(":visible");
-// 					if(vis){
-// 						$(child).hide();
-// 					}else{
-// 						$(child).show();
-// 					}
-// 				}else{
-// 					let data = $(this).attr("id");
-// 					console.log(li);
-// 					$.ajax({
-// 						url : "serverExplorer.do",
-// 						data : {uri : data},
-// 						dataType : "html",
-// 						success : function(resp) {
-// 							li.append(resp);
-// 						},
-// 						error : function() {
-		
-// 						}
-// 					});
-// 				}
-// 			}// if문 끝
-// 		})
-		
-		
+		$("#tree2").fancytree({
+			extensions: ["dnd", "edit"],
+			selectMode: 1,
+
+	      	lazyLoad: function(event, data){
+		        data.result = {
+		        		url: "<%= request.getContextPath() %>/serverExplorer.do?ctxName=/dummy&url="+data.node.key
+		        };
+			},
+			init:function(event, data){
+				tree1 = data.tree;
+				
+			},
+			dnd: {
+		        autoExpandMS: 400,
+		        focusOnClick: true,
+		        preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+		        preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+		        dragStart: function(node, data) {
+		        	console.log("Start" + data);
+		        	
+		          return true;
+		        },
+		        dragEnter: function(node, data) {
+		        	console.log("Enter" + node);
+					console.log("=================dragEnter====================");
+					console.log(node);
+					console.log(data);
+					console.log("=================dragEnter====================");
+					
+					let pass = false;
+					pass = node.folder && node != data.otherNode.parent ;
+					console.log(node.parent != data.otherNode.parent);
+					
+					return pass;
+		        },
+		        dragDrop: function(node, data) {
+		           // 서버사이드의 진짜 자원에 대한 커멘드 처리
+		        
+				
+				console.log("=================dragDrop====================");
+          		console.log("node : " + node);
+          		console.log("data : " + data);
+          		console.log("=================dragDrop====================");
+	          	
+          		let param ={
+          				
+          				node : node,
+          				data : data,
+          				command : data.originalEvent.ctrlKey?"COPY":"MOVE"
+       					
+          		}
+          		commandProcess(param);
+				}
+			}
+		});
+	
 	})
 
 </script>
@@ -162,6 +190,11 @@
 <ul>
 	<li id = "/" class = "folder lazy"><%= request.getContextPath() %></li>
 
+</ul>
+</div>
+<div id = "tree2">
+<ul>
+	<li id = "/" class = "folder lazy">dummy</li>
 </ul>
 </div>
 </body>

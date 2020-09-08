@@ -39,7 +39,7 @@ public class ServerExplorerServlet extends HttpServlet {
 		String accept = req.getHeader("Accept");
 		
 		String ctxName = req.getParameter("ctxName");
-		//System.out.println(ctxName);
+		System.out.println(ctxName);
 		ServletContext application = this.application;
 		if(StringUtils.isNotBlank(ctxName)) {
 			application = getServletContext().getContext(ctxName);

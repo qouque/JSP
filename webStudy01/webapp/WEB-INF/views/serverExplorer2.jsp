@@ -6,14 +6,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.36.1/skin-win8/ui.fancytree.min.css" rel="stylesheet">
-
-<script type="text/javascript" src = "<%=request.getContextPath() %>/js/jquery-3.5.1.min.js"></script>
-<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.36.1/jquery.fancytree-all-deps.min.js"></script>
 <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.36.1/jquery.fancytree-all.min.js"></script>
@@ -183,8 +176,6 @@
 	})
 
 </script>
-</head>
-<body>
 <h4>Model2 구조로 webStudy01 컨텍스트의 익스플로러 구현</h4>
 <div id = "tree1">
 <ul>
@@ -197,8 +188,6 @@
 	<li id = "/" class = "folder lazy">dummy</li>
 </ul>
 </div>
-</body>
-</html>
 
 
 

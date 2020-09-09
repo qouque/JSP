@@ -42,5 +42,11 @@
   <session-config>
   	<session-timeout>10</session-timeout>
   </session-config>
+<!--   <jsp-config> -->
+<!--  	<jsp-property-group> -->
+<!--  		<url-pattern>/09/*</url-pattern> -->
+<!--  		<include-prelude>/03/standard.jsp</include-prelude> -->
+<!--  	</jsp-property-group> 	 -->
+<!--   </jsp-config> -->
 </web-app>
 

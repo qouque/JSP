@@ -50,6 +50,16 @@
 	
 	cal.set(year, month, 1);
 	
+	cal.add(Calendar.MONTH, -1); 
+	int beforeMonth = cal.get(Calendar.MONTH);
+	int beforeYear = cal.get(Calendar.YEAR);
+	
+	cal.add(Calendar.MONTH, 2); // 현재 캘린더를 다음달로 옮김
+	int nextMonth = cal.get(Calendar.MONTH);
+	int nextYear = cal.get(Calendar.YEAR);
+	
+// 	cal.add(Calendar.MONTH, -1);
+	
 	int startDay = cal.getMinimum(Calendar.DATE);
 	int endDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 	int start = cal.get(Calendar.DAY_OF_WEEK);
@@ -57,56 +67,23 @@
 	
 	Calendar todayCal = Calendar.getInstance(TimeZone.getTimeZone(timeOutType));
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-	int intToday = Integer.parseInt(sdf.format(todayCal.getTime()));
+	int intToday = Integer.parseInt(sdf.format(cal.getTime()));
 	
 	String pattern = null;
 	
 %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<script type="text/javascript" src="<%=request.getContextPath() %>/js/jquery-3.5.1.min.js"></script>
 <script type="text/javascript">
 	$(function(){
 		var form = $('#calendarForm');
-		$("a").on("click", function(){
-			var inputs = $(form).find(":input");
-			let obj = {};
-			let url = form.action;
-			let method = form.method;
-			inputs.each(function(index, tag){
-				let name = tag.name;
-				if(name){	
-					let value = tag.value;
-	 				obj[name] = value;
-				}
-			});
+		$("#preBtn,#nextBtn").on("click", function() {
 			
-			if($(this).attr("id") == "nextBtn"){
-				obj['monthType'] = parseInt(obj['monthType']) + 1;
-			}else if($(this).attr("id") == "preBtn"){
-				obj['monthType'] = parseInt(obj['monthType']) - 1;
-			}
+			let year = $(this).data("year");
+			let month = $(this).data("month");
 			
-			var arr = new Array();
-			var i = 0;
+			form.find("[name='year']").val(year);
+			form.find("[name='monthType']").val(month);
 			
-			for(var name in obj){
-				arr[i]=new Array();
-				arr[i]['name'] = name;
-				eval("arr["+i+"]['value']=obj."+name);
-				i++;
-			}
-			
-			var len = arr.length;
-			var str='';
-			
-			for(var i=0; i<len;i++){
-				str+=arr[i]['name']+"="+arr[i]['value']+"&";
-			}
-			location.href="<%=request.getContextPath()%>/07/calendar.jsp?" + str;
+			form.submit();
 		});
 	});
 </script>
@@ -123,16 +100,14 @@
 		text-align:center;
 	}
 </style>
-</head>
-<body>
 <div id="calendarDiv">
-	<a id="preBtn"><b>&lt;</b></a>
+	<a id="preBtn" data-year="<%= beforeYear %>" data-month="<%= beforeMonth %>"><b>&lt;</b></a>
 	<%=year %>, <%=months[month] %>
-	<a id="nextBtn"><b>&gt;</b></a>
+	<a id="nextBtn" data-year="<%= nextYear %>" data-month="<%= nextMonth %>"><b>&gt;</b></a>
 	<br>
 </div>
-<form id="calendarForm">
-	
+<form id="calendarForm" method="post">
+	<input type="hidden" name="service" value="CALENDAR"/>
 	year : <input id="year" name="year" type="number" value="<%=year %>" />
 	month : 
 	<select name="monthType" onchange="this.form.submit()">
@@ -234,5 +209,3 @@
 		%>
 	</tr>
 </table>
-</body>
-</html>

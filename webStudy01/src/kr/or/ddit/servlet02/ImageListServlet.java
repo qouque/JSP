@@ -9,11 +9,13 @@ import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import kr.or.ddit.utils.TemplateUtils;
+
 
 public class ImageListServlet extends HttpServlet {
 	
@@ -48,26 +50,11 @@ public class ImageListServlet extends HttpServlet {
 			return accept;
 		});
 		
-		StringBuffer options = new StringBuffer();
-		for(String file : listFiles) {
-			String fileMime = application.getMimeType(file);
-			options.append(String.format(pattern, fileMime, file));
-		}
-		//req.
-		Map<String, Object> attributeMap = new LinkedHashMap<>();
-		attributeMap.put("jqueryurl",contextPath);
-		// /webStudy01/image/image.do
-		attributeMap.put("imageUrl",String.format("%s%s", contextPath, imageUrl));
-		attributeMap.put("options",options);
+		req.setAttribute("listFiles", listFiles);
+		req.setAttribute("includePage", "/WEB-INF/views/imageView.jsp");
 		
-		String tmplePath = "/kr/or/ddit/servlet02/fileList.tmpl";
-		String html = TemplateUtils.readAndReplace(tmplePath, attributeMap);
+		req.getRequestDispatcher("/WEB-INF/views/layout.jsp").forward(req, resp);
 		
-		resp.setContentType("text/html;charset=UTF-8");
-		
-		PrintWriter out = resp.getWriter();
-		out.println(html);
-		out.close();
 	}
 	
 	

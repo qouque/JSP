@@ -1,9 +1,11 @@
 package kr.or.ddit.commons;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +13,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang3.StringUtils;
+
+import kr.or.ddit.Constans;
+import kr.or.ddit.utils.CookieUtils;
 
 @WebServlet("/login/loginProcess.do")
 public class LoginProcessServlet extends HttpServlet{
@@ -30,17 +35,19 @@ public class LoginProcessServlet extends HttpServlet{
 		String msg = "";
 		String mem_id = req.getParameter("mem_id");
 		String mem_pass = req.getParameter("mem_pass");
+		String saveYN = req.getParameter("saveYN");
 		
 		int statusCode = HttpServletResponse.SC_OK;
-		if(StringUtils.isBlank(mem_id) || StringUtils.isBlank(mem_pass)){
+		if(StringUtils.isBlank(mem_id) || StringUtils.isBlank(mem_pass) || StringUtils.isBlank(saveYN)){
 			msg = "필수 파라미터 누락";
 			statusCode = HttpServletResponse.SC_BAD_REQUEST;
 			resp.sendError(statusCode, msg);
 			return;
 		}
 		
+		
 		String goPage = null;
-		boolean redirect = false;
+		boolean redirect = false; // redirect 여부 확인
 		
 		HttpSession session = req.getSession(false);
 		if(session == null || session.isNew()) {
@@ -48,11 +55,22 @@ public class LoginProcessServlet extends HttpServlet{
 			return;
 		}
 		String message = null;
+		
 		if(mem_id.equals(mem_pass)) {
+			// 성공시
+			Cookie cookie = CookieUtils.createCookie(Constans.LOGINMEMBERID, mem_id, CookieUtils.TextType.PATH, 
+															req.getContextPath(), 60*60*24*7);
+			if("Y".equals(saveYN)) {
+				resp.addCookie(cookie);
+			}else if("N".equals(saveYN)) {
+				cookie.setMaxAge(0);
+				resp.addCookie(cookie);
+			}
 			goPage = "/";
 			redirect = true;
 			session.setAttribute("authID", mem_id);
 		}else {
+			// 실패시
 			goPage = "/login/loginForm.jsp";
 			message = "비번 오류";
 			req.setAttribute("message", message);

@@ -32,21 +32,16 @@ public class TemplateUtils {
 		try {
 			Path tmpPath = Paths.get(tmplURL.toURI());
 			File tmpFile = tmpPath.toFile();
+			FileInputStream fis = new FileInputStream(tmpFile);
+			InputStreamReader in = new InputStreamReader(fis, "UTF-8");
 			
+			BufferedReader reader = new BufferedReader(in);
+			String tmp = null;
 			StringBuffer template = new StringBuffer();
-			
-			try(
-					FileInputStream fis = new FileInputStream(tmpFile);
-					InputStreamReader in = new InputStreamReader(fis, "UTF-8");
-					
-					BufferedReader reader = new BufferedReader(in);
-				) {
-				String tmp = null;
-				
-				while((tmp = reader.readLine()) != null) {
-					template.append(tmp+"\n");
-				}
+			while((tmp = reader.readLine()) != null) {
+				template.append(tmp);
 			}
+			reader.close();
 			return template;
 		}catch (URISyntaxException e) {
 			throw new IOException(e);

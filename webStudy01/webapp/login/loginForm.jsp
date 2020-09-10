@@ -29,6 +29,7 @@
 	<ul>
 		<li>
 			아이디 : <input type="text" name = "mem_id" value="<%= Objects.toString(mem_id,"") %>"/>
+			<label><input type="checkbox" name="saveId" />아이디 기억하기</label>
 		</li>
 		<li>
 			비밀번호 : <input type="password" name = "mem_pass"/>

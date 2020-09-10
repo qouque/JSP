@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.vo.MenuVO;
 
-@WebServlet("/model2/layoutPage.do")
+@WebServlet("/index.do")
 public class Model2PageModuleServlet extends HttpServlet {
 	
 	public interface PagingService{
@@ -20,11 +20,29 @@ public class Model2PageModuleServlet extends HttpServlet {
 	}
 	
 	public static enum IncludePage{
-		CALCULATE(new MenuVO("CALCULATE", "사칙연산기", "/model2/layoutPage.do", "/01/calForm.html")),
-		SESSIONTIMER(new MenuVO("SESSIONTIMER", "세션타이머", "/model2/layoutPage.do", "/07/sessionTimer.jsp")),
-		CALENDAR(new MenuVO("CALENDAR", "달력", "/model2/layoutPage.do", "/07/calendar.jsp")),
-		EXPLORER(new MenuVO("EXPLORER", "서버탐색기", "/serverExplorer.do", "/WEB-INF/views/serverExplorer2.jsp")),
-		IMAGE(new MenuVO("IMAGE","이미지뷰어","/image/imageList.do", null));
+		CALCULATE(MenuVO.getBuilder().menuId("CALCULATE")
+									 .memuText("사칙연산기")
+									 .menuURI("/")
+									 .jspPath("/01/calForm.html")
+									 .build()),
+		SESSIONTIMER(MenuVO.getBuilder().menuId("SESSIONTIMER")
+										.memuText("세션타이머")
+										.menuURI("/")
+										.jspPath("/07/sessionTimer.jsp")
+										.build()),
+		CALENDAR(MenuVO.getBuilder().menuId("CALENDAR")
+									.memuText("달력")
+									.menuURI("/")
+									.jspPath("/07/calendar.jsp")
+									.build()),
+		EXPLORER(MenuVO.getBuilder().menuId("EXPLORER")
+									.memuText("서버탐색기")
+									.menuURI("/serverExplorer.do")
+									.build()),
+		IMAGE(MenuVO.getBuilder().menuId("IMAGE")
+								 .memuText("이미지뷰어")
+								 .menuURI("/image/imageList.do")
+								 .build());
 		
 		private MenuVO menuVO;
 
@@ -41,21 +59,26 @@ public class Model2PageModuleServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
+		
+		
 		String includePageParam = req.getParameter("service");
 		IncludePage includePage = null;
 		int sc = 200;
+		String includPage = "/WEB-INF/views/index.jsp";
+		
 		if(StringUtils.isNotBlank(includePageParam)) {
 			try {
 				includePage = IncludePage.valueOf(includePageParam);
 				
 				MenuVO menu = includePage.getMenuVO();
 				
-				req.setAttribute("includePage", menu.getJspPath());
+				includPage = menu.getJspPath();
 				
 			}catch (IllegalArgumentException e) {
 				sc = 404;
 			}
 		}
+		req.setAttribute("includePage", includPage);
 		
 		if(sc == 200) {
 			req.getRequestDispatcher("/WEB-INF/views/layout.jsp").forward(req, resp);

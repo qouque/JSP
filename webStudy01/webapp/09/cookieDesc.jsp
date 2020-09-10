@@ -13,7 +13,7 @@
 	: Http(Stateless) 특성의 단점을 보완하기 위한 방법
 	1. session : 상태정보를 서버측에 저장하는 방법
 		1) 서버 부하
-		2) 데이터의 저장 기간이 제한됨.
+		2) 데이터의 저장 기간이 제한됨. (timeout)
 	2. cookie : 상태정보를 클라이언트측에 저장하는 방법
 		1) 보안 취약성.
 		2) 네트웤 부하를 줄이기위해 크기 제한.
@@ -34,7 +34,7 @@
 	
 	
 	6. 재전송된 쿠키를 받고, 상태 복원
-	<%
+	<%--
 		Cookie[] cookies = request.getCookies();
 		String cookieValue = null;
 		if(cookies != null){
@@ -46,8 +46,8 @@
 			} // for문 끝;;
 			
 		}
-	%>
-	<%= cookieValue %>
+	--%>
+	<%-- cookieValue --%>
 </pre>
 </body>
 </html>

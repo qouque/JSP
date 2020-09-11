@@ -15,7 +15,7 @@ public class UserServiceImpl implements IUserService {
 		List<UserVO> list = dao.selectAllUser();
 		return list;
 	}
-
+	//g2
 	@Override
 	public List<String> readUserId() {
 		List<String> list = dao.selectAlluserId();

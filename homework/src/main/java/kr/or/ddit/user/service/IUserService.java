@@ -8,5 +8,5 @@ public interface IUserService {
 	
 	public List<UserVO> readUser();
 	
-	
+	public List<String> readUserId();
 }

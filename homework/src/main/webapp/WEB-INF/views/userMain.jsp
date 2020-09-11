@@ -12,7 +12,7 @@
 <h2>유저 관리</h2>
 <%
 	List<UserVO> userList = (List<UserVO>) request.getAttribute("userList");
-
+	List<String> userIdList = (List<String>) request.getAttribute("userIdList");
 %>
 <table border="1">
 	<thead>

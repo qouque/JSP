@@ -16,4 +16,10 @@ public class UserServiceImpl implements IUserService {
 		return list;
 	}
 
+	@Override
+	public List<String> readUserId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

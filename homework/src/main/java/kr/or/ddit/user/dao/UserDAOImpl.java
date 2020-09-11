@@ -43,9 +43,33 @@ public class UserDAOImpl implements IUserDAO {
 			
 			
 		}catch(SQLException e) {
+			e.getStackTrace();
 			throw new RuntimeException(e);
 		}
 		
+		
+		return list;
+	}
+
+	@Override
+	public List<String> selectAlluserId() {
+		List<String> list = new ArrayList<>();
+		
+		try(
+			Connection conn = JDBCUtils.getConnection();
+			Statement stmt = conn.createStatement();
+		){
+			
+			String sql = "SELECT userid from users";
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				list.add(rs.getString(1));
+			}
+			
+		}catch (SQLException e) {
+			e.getStackTrace();
+			throw new RuntimeException(e);
+		}
 		
 		return list;
 	}

@@ -8,5 +8,6 @@ public interface IUserDAO {
 	
 	public List<UserVO> selectAllUser();
 	
+	public List<String> selectAlluserId();
 	
 }
